@@ -1,0 +1,25 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [claude/cool-johnson-r3v0pd]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - name: Tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python -m pytest -q
+      - run: python -m PyInstaller --noconfirm --clean ALLOH_UCHUN.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ALLOH_UCHUN-exe
+          path: dist/ALLOH_UCHUN.exe
